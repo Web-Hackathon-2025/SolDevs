@@ -99,8 +99,8 @@ export async function signup(data: SignupInput) {
         .eq("id", authData.user.id);
     }
 
-    revalidatePath("/", "layout");
-    redirect("/dashboard");
+    // Do not redirect. Return success so UI can show verification steps.
+    return { success: true, email: data.email };
   } catch (error: any) {
     if (error.message === "NEXT_REDIRECT" || (error.digest && error.digest.startsWith("NEXT_REDIRECT"))) {
       throw error;

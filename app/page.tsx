@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Search, Shield, Star, Users, CheckCircle2, Sparkles, TrendingUp, Clock, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { HeaderAuth } from "@/components/header-auth";
 
 export default function HomePage() {
   const features = [
@@ -70,19 +71,7 @@ export default function HomePage() {
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="font-medium">
-                Login
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm" className="font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+          <HeaderAuth />
         </div>
       </header>
 

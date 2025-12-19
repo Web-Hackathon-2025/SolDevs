@@ -18,6 +18,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<"customer" | "service_provider">("customer");
+  const [success, setSuccess] = useState(false);
 
   const {
     register,
@@ -44,12 +45,44 @@ export default function SignupPage() {
       const result = await signup(data);
       if (result?.error) {
         setError(result.error);
+      } else if (result?.success) {
+        setSuccess(true);
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  }
+
+  if (success) {
+    return (
+      <Card className="glass border-0 shadow-premium-lg overflow-hidden relative w-full max-w-lg mx-auto animate-in fade-in zoom-in-95 duration-300">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600" />
+        <CardHeader className="text-center pt-8 pb-2">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <Mail className="h-8 w-8 text-green-600" />
+          </div>
+          <CardTitle className="text-2xl font-bold tracking-tight text-green-700">Check your inbox</CardTitle>
+          <CardDescription className="text-base text-muted-foreground mt-2">
+            We've sent a verification link to your email address.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 text-center pb-8">
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
+            Please click the link in the email to activate your account. Once verified, you can sign in to access your dashboard.
+          </p>
+          <div className="pt-4">
+            <Link href="/login">
+              <Button className="w-full h-11 text-base font-semibold shadow-md active:scale-95 transition-transform" variant="default">
+                Proceed to Login
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
