@@ -21,13 +21,13 @@ export async function createBooking(data: BookingInput & { provider_id: string }
       provider_id: data.provider_id,
       service_id: data.service_id,
       scheduled_date: data.scheduled_date,
-      scheduled_time: data.scheduled_time,
+      scheduled_time: data.scheduled_time + ":00", // Ensure HH:MM:SS format for Time
       service_address: data.service_address,
       service_city: data.service_city,
       service_postal_code: data.service_postal_code,
       customer_notes: data.customer_notes,
       status: "requested",
-    },
+    } as any,
   ]);
 
   if (error) return { error: error.message };
