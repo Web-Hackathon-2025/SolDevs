@@ -49,27 +49,52 @@ export async function signup(data: SignupInput) {
     });
 
     if (signUpError) {
-      console.error("Signup error details:", JSON.stringify(signUpError, null, 2));
-      return { error: signUpError.message };
+      console.error("Signup error details:", {
+        message: signUpError.message,
+        name: signUpError.name,
+        code: (signUpError as any).code,
+        status: (signUpError as any).status,
+        raw: JSON.stringify(signUpError)
+      });
+      // Return a more descriptive error if available, or the generic one
+      return {
+        error: `${signUpError.message || "Signup failed"} ${(signUpError as any).code ? `(Code: ${(signUpError as any).code})` : ""
+          }`.trim()
+      };
     }
 
     if (!authData.user) {
       return { error: "Signup failed - no user created" };
     }
 
-    // Verify profile creation and update phone number (which trigger might miss)
-    if (data.phone_number) {
-      const { error: updateError } = await supabase
-        .from("users")
-        .update({ phone_number: data.phone_number })
-        .eq("id", authData.user.id);
+    // SELF-HEALING: Check if profile exists (Trigger might have failed silently with "Safe" script)
+    const { data: profileCheck } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", authData.user.id)
+      .single();
 
-      if (updateError) {
-        console.error("Error updating phone number:", updateError);
-        // Continue, as user is created
+    if (!profileCheck) {
+      console.log("Trigger failed to create profile. Executing manual fallback...");
+      const { error: manualInsertError } = await supabase.from("users").insert({
+        id: authData.user.id,
+        email: data.email,
+        full_name: data.full_name,
+        role: data.role || 'customer',
+        phone_number: data.phone_number || null,
+      } as any);
+
+      if (manualInsertError) {
+        console.error("Manual profile creation failed:", manualInsertError);
+        // We still don't fail the request, but we log it correctly
       }
+    } else if (data.phone_number) {
+      // If profile exists, just update phone number
+      await supabase
+        .from("users")
+        .update({ phone_number: data.phone_number } as any)
+        .eq("id", authData.user.id);
     }
-
 
     revalidatePath("/", "layout");
     redirect("/dashboard");
