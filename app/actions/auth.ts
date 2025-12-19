@@ -26,6 +26,9 @@ export async function login(data: LoginInput) {
     revalidatePath("/", "layout");
     redirect("/dashboard");
   } catch (error: any) {
+    if (error.message === "NEXT_REDIRECT" || (error.digest && error.digest.startsWith("NEXT_REDIRECT"))) {
+      throw error;
+    }
     console.error("Login exception:", error);
     return { error: error.message || "An unexpected error occurred" };
   }
@@ -99,6 +102,9 @@ export async function signup(data: SignupInput) {
     revalidatePath("/", "layout");
     redirect("/dashboard");
   } catch (error: any) {
+    if (error.message === "NEXT_REDIRECT" || (error.digest && error.digest.startsWith("NEXT_REDIRECT"))) {
+      throw error;
+    }
     console.error("Signup exception:", error);
     return { error: error.message || "An unexpected error occurred" };
   }
