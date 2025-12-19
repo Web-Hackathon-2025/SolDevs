@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏗️ Karigar - Hyperlocal Services Marketplace
 
 A modern, enterprise-level platform connecting customers with verified local service providers (plumbers, electricians, cleaners, tutors, etc.). Built with Next.js 14, TypeScript, Tailwind CSS, and Supabase.
@@ -223,3 +224,7 @@ MIT License - feel free to use this project for learning or your own services ma
 **Built with ❤️ using Claude Code**
 
 For setup help, see `SETUP_INSTRUCTIONS.md` and `QUICKSTART.md`
+=======
+# SolDevs
+Waqar, Hamza, Umar
+>>>>>>> 4e53666469d5d9b37502a660eec4f4f13a8b59e6
